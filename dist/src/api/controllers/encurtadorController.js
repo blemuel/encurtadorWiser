@@ -19,8 +19,17 @@ class encurtadorController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { url } = req.body;
-                const newUrl = yield encurtadorService.encurtarUrl(url);
-                res.status(201).send({ newUrl: newUrl });
+                if (url) {
+                    const newUrl = yield encurtadorService.encurtarUrl(url);
+                    res.status(201).send({ newUrl: newUrl });
+                }
+                else {
+                    const error = {
+                        code: "preconditionFailed",
+                        message: "Solicitação mal formada"
+                    };
+                    res.status(400).send(error);
+                }
             }
             catch (error) {
                 res.status(500).send(error);
@@ -32,12 +41,7 @@ class encurtadorController {
             try {
                 const { newUrl } = req.params;
                 const rows = yield encurtadorService.getUrl(newUrl);
-                if (rows.length > 0) {
-                    res.redirect(200, rows[0].url);
-                }
-                else {
-                    res.redirect(404, "erro404.html");
-                }
+                res.redirect(301, rows.length > 0 ? rows[0].url : "erro404.html");
             }
             catch (error) {
                 res.status(500).send(error);
