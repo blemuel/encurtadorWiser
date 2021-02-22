@@ -49,7 +49,7 @@ class encurtadorService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const client = yield dbconnector_1.default.connect();
-                const now = new Date;
+                let now = new Date;
                 // now.setDate(now.getDate() + 7);
                 const sql = `SELECT * FROM urls WHERE newurl = '${newUrl}' AND expiresat > timestamp '${now}'`;
                 const { rows } = yield client.query(sql);

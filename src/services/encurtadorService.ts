@@ -40,7 +40,7 @@ class encurtadorService {
         try {
             const client = await pool.connect();
 
-            const now = new Date
+            let now = new Date
             // now.setDate(now.getDate() + 7);
 
             const sql = `SELECT * FROM urls WHERE newurl = '${newUrl}' AND expiresat > timestamp '${now}'`;
