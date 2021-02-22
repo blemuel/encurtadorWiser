@@ -3,7 +3,7 @@ const encurtadorService = new EncurtadorService()
 
 class encurtadorController {
 
-    public async encurtarUrl(req, res) {
+    public async encurtarUrl(req:any, res:any) {
         try {
             const { url } = req.body
             if(url){
@@ -21,7 +21,7 @@ class encurtadorController {
         }
     }
 
-    public async getUrl(req, res) {
+    public async getUrl(req:any, res:any) {
         try {
             const { newUrl } = req.params
             const rows = await encurtadorService.getUrl(newUrl)

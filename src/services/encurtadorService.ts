@@ -9,7 +9,7 @@ class encurtadorService {
         return newUrl
     }
 
-    public async encurtarUrl(url) {
+    public async encurtarUrl(url:string) {
         try {
             const client = await pool.connect()
             let newUrl = await this.gerarUrl()
@@ -37,7 +37,7 @@ class encurtadorService {
         }
     }
 
-    public async getUrl(newUrl) {
+    public async getUrl(newUrl:string) {
         try {
             const client = await pool.connect()
             newUrl = process.env.URL_API + newUrl
