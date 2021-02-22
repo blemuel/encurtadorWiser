@@ -1,0 +1,138 @@
+openapi: 3.0.0
+info:
+    description: "API - Challenge encurtador"
+    version: 1.0.0
+    title: Challenge Encurtador
+    termsOfService: http://wisereducacao.com
+    contact:
+        email: blemuel@gmail.com
+    license:
+        name: Apache 2.0
+        url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+    - url: https://localhost:8081
+      description: Servidor local
+tags:
+    - name: encurtador
+      description: Endpoints para manipulação de urls
+
+paths:
+    #Rotas de autenticação
+    /encurtador/:
+        post:
+            tags:
+                - encurtador
+            summary: Endpoint para envio da URL que será encurtada
+            operationId: encurtarUrl
+            requestBody:
+                $ref: "#/components/requestBodies/EncurtarUrl"
+            responses:
+                "201":
+                    description: Operação realizada com sucesso
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/UrlEncurtada"
+                "400":
+                    description: Solicitação mal formada
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Erro400"
+                "500":
+                    description: Erro interno do servidor
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Erro500"
+
+    /{newUrl}/:
+        get:
+            tags:
+                - encurtador
+            summary: Obter a Url original enviado a Url encurtada
+            operationId: getUrl
+            parameters:
+                - name: newUrl
+                  in: path
+                  description: "Url encurtada"
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                "301":
+                    description: Operação realizada com sucesso
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Redirecionamento"
+                "500":
+                    description: Erro interno do servidor
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Erro500"
+
+components:
+    requestBodies:
+        EncurtarUrl:
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/EncurtarUrl"
+            description: Objeto enviado para encurtar uma Url
+            required: true
+
+    schemas:
+        EncurtarUrl:
+            type: object
+            properties:
+                url:
+                    type: string
+
+        UrlEncurtada:
+            type: object
+            properties:
+                newUrl:
+                    type: string
+        
+        Redirecionamento:
+            type: string
+            properties:
+                url:
+                    type: string
+                    description: Url para qual será redirecionado
+
+        Erro400:
+            type: object
+            properties:
+                code:
+                    type: string
+                message:
+                    type: string
+
+        Erro500: 
+            type: object
+            properties:
+                length:
+                    type: integer
+                name:
+                    type: string
+                severity:
+                    type: string
+                code:
+                    type: string
+                detail:
+                    type: string
+                schema:
+                    type: string
+                table:
+                    type: string
+                column:
+                    type: string
+                file:
+                    type: string
+                line:
+                    type: string
+                routine:
+                    type: string
