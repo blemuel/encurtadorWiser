@@ -1,0 +1,44 @@
+version: "3"
+services:
+  encurtador-api:
+    container_name: encurtador-api
+    build:
+      context: .
+      dockerfile: .Dockerfile
+    depends_on:
+      - postgres
+    restart: always
+    environment:
+      NODE_ENV: development
+      PORT: 8081
+    ports:
+      - "8081:8081"
+  postgres:
+    container_name: postgres
+    image: postgres
+    ports:
+      - "5432:5432"
+    volumes: 
+      - ./src/migrations/:/docker-entrypoint-initdb.d/
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 315289
+      POSTGRES_DB: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
+    expose:
+      - "5432"
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    container_name: swagger-ui
+    expose:
+      - "8080"
+    ports:
+      - 8080:8080
+    volumes:
+      - ./swagger:/usr/share/nginx/html/swagger
+    environment:
+      API_URL: swagger/swagger.yml
+volumes:
+    db-data:
+    pgadmin-data:
