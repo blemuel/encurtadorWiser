@@ -1,4 +1,4 @@
-import pool from '../dbconfig/dbconnector';
+import pool from '../dbconfig/dbconnector'
 import shortid from 'shortid'
 
 class encurtadorService {
@@ -11,23 +11,24 @@ class encurtadorService {
 
     public async encurtarUrl(url) {
         try {
-            const client = await pool.connect();
+            const client = await pool.connect()
             let newUrl = await this.gerarUrl()
             
-            // let verificador = await this.getUrl(newUrl)
-            // while (verificador.length > 0) {
-            //     newUrl = await this.gerarUrl()
-            //     verificador = await this.getUrl(newUrl)
-            // }
+            let verificador = await this.getUrl(newUrl)
+            while (verificador.length > 0) {
+                newUrl = await this.gerarUrl()
+                verificador = await this.getUrl(newUrl)
+            }
 
+            newUrl = process.env.URL_API + newUrl
             const expiresat = new Date
-            console.log(expiresat)
-            expiresat.setDate(expiresat.getDate() + 7);
+            //Define que a url será válida por 7 dias
+            expiresat.setDate(expiresat.getDate() + 7)
           
-            const sql = "INSERT INTO urls (url, newurl, expiresat) VALUES ($1, $2, $3)";
-            await client.query(sql, [url, newUrl, expiresat]);
+            const sql = "INSERT INTO urls (url, newurl, expiresat) VALUES ($1, $2, $3)"
+            await client.query(sql, [url, newUrl, expiresat])
 
-            client.release();
+            client.release()
 
             return newUrl
             
@@ -38,22 +39,21 @@ class encurtadorService {
 
     public async getUrl(newUrl) {
         try {
-            const client = await pool.connect();
+            const client = await pool.connect()
+            newUrl = process.env.URL_API + newUrl
 
-            let now = new Date
-            // now.setDate(now.getDate() + 7);
+            const now = new Date().toUTCString()
 
-            const sql = `SELECT * FROM urls WHERE newurl = '${newUrl}' AND expiresat > timestamp '${now}'`;
-            const { rows } = await client.query(sql);
+            const sql = `SELECT * FROM urls WHERE newurl = '${newUrl}' AND expiresat > timestamp '${now}'`
+            const { rows } = await client.query(sql)
 
-            client.release();
+            client.release()
 
             return rows
         } catch (error) {
-            console.log(error)
-             throw error
+            throw error
         }
     }
 }
 
-export default encurtadorService;
+export default encurtadorService

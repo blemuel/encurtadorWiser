@@ -27,13 +27,14 @@ class encurtadorService {
             try {
                 const client = yield dbconnector_1.default.connect();
                 let newUrl = yield this.gerarUrl();
-                // let verificador = await this.getUrl(newUrl)
-                // while (verificador.length > 0) {
-                //     newUrl = await this.gerarUrl()
-                //     verificador = await this.getUrl(newUrl)
-                // }
+                let verificador = yield this.getUrl(newUrl);
+                while (verificador.length > 0) {
+                    newUrl = yield this.gerarUrl();
+                    verificador = yield this.getUrl(newUrl);
+                }
+                newUrl = process.env.URL_API + newUrl;
                 const expiresat = new Date;
-                console.log(expiresat);
+                //Define que a url será válida por 7 dias
                 expiresat.setDate(expiresat.getDate() + 7);
                 const sql = "INSERT INTO urls (url, newurl, expiresat) VALUES ($1, $2, $3)";
                 yield client.query(sql, [url, newUrl, expiresat]);
@@ -49,15 +50,14 @@ class encurtadorService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const client = yield dbconnector_1.default.connect();
-                let now = new Date;
-                // now.setDate(now.getDate() + 7);
+                newUrl = process.env.URL_API + newUrl;
+                const now = new Date().toUTCString();
                 const sql = `SELECT * FROM urls WHERE newurl = '${newUrl}' AND expiresat > timestamp '${now}'`;
                 const { rows } = yield client.query(sql);
                 client.release();
                 return rows;
             }
             catch (error) {
-                console.log(error);
                 throw error;
             }
         });
