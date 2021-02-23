@@ -2,6 +2,9 @@
 Challenge Encurtador - Backend
 
 
+Tecnologias utilizadas: Typescript, NodeJS, Express, PostgreSQL, Docker. Documentação utilizando Swagger.
+
+
 Requisitos:
 
 - Docker instalado e iniciado na máquina. - _Disponível em: https://www.docker.com/_
